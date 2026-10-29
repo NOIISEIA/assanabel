@@ -1,0 +1,52 @@
+/* Curseur custom Assanabel (HP + pages maison) */
+.assanabel-cursor {
+  --ac-bronze: #a5834a;
+  --ac-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 250;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--ac-bronze);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    width 0.35s var(--ac-ease),
+    height 0.35s var(--ac-ease),
+    margin 0.35s var(--ac-ease);
+  display: grid;
+  place-items: center;
+}
+
+.assanabel-cursor span {
+  font: 600 0.62rem/1 var(--font-noto-sans), "Noto Sans", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.assanabel-cursor.big {
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+}
+
+.assanabel-cursor.big span {
+  opacity: 1;
+}
+
+.assanabel-cursor.show {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .assanabel-cursor {
+    display: none;
+  }
+}

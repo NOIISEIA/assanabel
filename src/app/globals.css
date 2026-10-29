@@ -1,26 +1,222 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bronze: #a5834a;
+  --bronze-deep: #80612f;
+  --terre: #996849;
+  --terre-clair: #a87852;
+  --ivory: #f7f3ea;
+  --champagne: #e6d4b5;
+  --ink: #1c1814;
+  --ink-soft: #3d342b;
+  --olive: #65745d;
+  --grenade: #a64f57;
+  --cta: var(--terre);
+  --background: var(--ivory);
+  --foreground: var(--ink);
+  --selection: color-mix(in srgb, var(--terre) 35%, white);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bronze: var(--bronze);
+  --color-bronze-deep: var(--bronze-deep);
+  --color-terre: var(--terre);
+  --color-terre-clair: var(--terre-clair);
+  --color-cta: var(--cta);
+  --color-ivory: var(--ivory);
+  --color-champagne: var(--champagne);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-olive: var(--olive);
+  --color-grenade: var(--grenade);
+  --font-display: var(--font-eb-garamond);
+  --font-title: var(--font-cinzel);
+  --font-sans: var(--font-noto-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-noto-sans), system-ui, sans-serif;
+  margin: 0;
 }
+
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+/* CTA — mix terre cuite / beige clair + cadre décalé */
+.btn-cadre-wrap {
+  --or: var(--terre, #996849);
+  --or-ink: #ffffff;
+  --or-hover: var(--terre-clair, #a87852);
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 10px 10px 0;
+  overflow: visible;
+}
+
+.btn-cadre-wrap--clair {
+  --or: var(--champagne, #e6d4b5);
+  --or-ink: var(--ink, #1c1814);
+  --or-hover: #f0e6d4;
+}
+
+.btn-cadre-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--or);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.btn-cadre {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 36px;
+  background: var(--or);
+  background-color: var(--or);
+  color: var(--or-ink) !important;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  border: none;
+  border-radius: 0;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.btn-cadre--compact {
+  padding: 10px 22px;
+  font-size: 12px;
+}
+
+.btn-cadre-wrap:hover .btn-cadre,
+.btn-cadre-wrap:focus-within .btn-cadre {
+  transform: translate(-4px, -4px);
+  background-color: var(--or-hover);
+}
+
+.btn-cadre-wrap:hover::after,
+.btn-cadre-wrap:focus-within::after {
+  transform: translate(8px, 8px);
+  opacity: 1;
+}
+
+.btn-cadre-wrap:active .btn-cadre {
+  transform: translate(0, 0);
+}
+
+.btn-cadre-wrap:active::after {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-cadre,
+  .btn-cadre-wrap::after {
+    transition: none;
+  }
+  .btn-cadre-wrap:hover .btn-cadre,
+  .btn-cadre-wrap:focus-within .btn-cadre {
+    transform: none;
+  }
+  .btn-cadre-wrap:hover::after,
+  .btn-cadre-wrap:focus-within::after {
+    transform: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--terre);
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: var(--font-eb-garamond), "Times New Roman", serif;
+}
+
+.prose-measure {
+  max-width: 68ch;
+}
+
+/* Carte — bandeaux défilants */
+@keyframes carte-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.carte-marquee {
+  animation: carte-marquee 38s linear infinite;
+}
+
+.carte-marquee--reverse {
+  animation-direction: reverse;
+}
+
+.carte-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carte-marquee {
+    animation: none;
+  }
+}
+
+/* À AJOUTER dans src/app/globals.css (animations utilisées par les nouveaux composants) */
+
+/* SocialLinks : anneau qui pulse autour des icônes */
+@keyframes ringp {
+  0% { transform: scale(1); opacity: 0.75; }
+  70%, 100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* PageIntrouvable (404) : cloches qui flottent + vapeur */
+@keyframes nf-bob {
+  50% { transform: translateY(-5px); }
+}
+@keyframes steam {
+  0% { opacity: 0; transform: translateY(10px); }
+  30% { opacity: 0.7; }
+  100% { opacity: 0; transform: translateY(-34px); }
+}
+
+/*
+ * Widgets flottants :
+ * - Zenchef : bas-droite (SDK)
+ * - Partoo : bas-droite, remonté via desktop/mobile-margin-bottom (88–96px)
+ * - RecevoirFab : bas-gauche
+ */

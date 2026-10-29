@@ -1,0 +1,805 @@
+/* Parcours devis interactif — design system Assanabel */
+
+/* Masque le chrome site + widgets flottants sur /devis (data-devis + .devis) */
+html[data-devis] body,
+body:has(.devis) {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html[data-devis] main,
+body:has(.devis) main {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html[data-devis] .site-header,
+html[data-devis] .site-footer,
+body:has(.devis) .site-header,
+body:has(.devis) .site-footer {
+  display: none !important;
+}
+
+html[data-devis] iframe[src*="zenchef"],
+html[data-devis] iframe[id*="zenchef"],
+html[data-devis] iframe[class*="ZC_"],
+html[data-devis] [class*="ZC_sdk"],
+html[data-devis] [id*="zenchef"],
+html[data-devis] [class*="partoo"],
+html[data-devis] [id*="partoo"],
+html[data-devis] #partoo-messaging-widget,
+body:has(.devis) iframe[src*="zenchef"],
+body:has(.devis) iframe[id*="zenchef"],
+body:has(.devis) iframe[class*="ZC_"],
+body:has(.devis) [class*="ZC_sdk"],
+body:has(.devis) [id*="zenchef"],
+body:has(.devis) [class*="partoo"],
+body:has(.devis) [id*="partoo"],
+body:has(.devis) #partoo-messaging-widget {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+.devis {
+  --dv-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dv-pad: clamp(1.25rem, 4vw, 2.5rem);
+  position: relative;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(247, 243, 234, 0.94) 0%, rgba(247, 243, 234, 0.88) 55%, rgba(230, 212, 181, 0.35) 100%),
+    url(/site/images/salle-panorama.webp) center / cover no-repeat;
+  isolation: isolate;
+}
+
+.devis::before {
+  content: "ASSANABEL";
+  position: absolute;
+  right: 0;
+  top: 18%;
+  z-index: 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-cinzel), serif;
+  font-weight: 500;
+  font-size: clamp(4rem, 12vw, 8rem);
+  letter-spacing: 0.12em;
+  color: rgba(28, 24, 20, 0.035);
+  pointer-events: none;
+  user-select: none;
+  max-height: 70%;
+  overflow: hidden;
+}
+
+.devis-bar {
+  position: relative;
+  z-index: 40;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem var(--dv-pad);
+  background: color-mix(in srgb, var(--ivory) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(28, 24, 20, 0.08);
+}
+
+.devis-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--font-cinzel), serif;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.devis-steps {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+@media (min-width: 900px) {
+  .devis-steps {
+    display: flex;
+  }
+}
+
+.devis-steps button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  font: 600 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(28, 24, 20, 0.42);
+  transition: background 0.35s var(--dv-ease), color 0.35s var(--dv-ease);
+}
+
+.devis-steps button.on {
+  background: var(--terre);
+  color: #fff;
+}
+
+.devis-steps button.done:not(.on) {
+  color: var(--ink-soft);
+}
+
+.devis-steps button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.devis-progress {
+  font: 600 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* Zone scroll = pleine largeur viewport (sinon la barre apparaît au milieu) */
+.devis-main {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.devis-main-inner {
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 2.75rem) var(--dv-pad) 1.75rem;
+}
+
+.devis-chapter {
+  margin: 0 auto clamp(1.8rem, 3.5vw, 2.8rem);
+  max-width: 42rem;
+  text-align: center;
+}
+
+.devis-chapter h1 {
+  margin: 0 0 1rem;
+  font-family: var(--font-cinzel), "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 4.8vw, 3.4rem);
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.devis-chapter p {
+  margin: 0 auto;
+  font-family: var(--font-noto-sans), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  max-width: 34rem;
+}
+
+.devis-panel {
+  animation: devis-in 0.55s var(--dv-ease) both;
+}
+
+@keyframes devis-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .devis-panel {
+    animation: none;
+  }
+}
+
+/* Étape 1 — cartes projet */
+.devis-projets {
+  display: grid;
+  gap: 1.1rem;
+}
+
+@media (min-width: 760px) {
+  .devis-projets {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+  }
+}
+
+.devis-projet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: 1.5px solid rgba(28, 24, 20, 0.12);
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.35s var(--dv-ease), transform 0.45s var(--dv-ease), box-shadow 0.45s var(--dv-ease);
+}
+
+.devis-projet:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(28, 24, 20, 0.1);
+}
+
+.devis-projet.on {
+  border-color: var(--terre);
+  box-shadow: 0 0 0 1px var(--terre), 0 18px 40px rgba(153, 104, 73, 0.14);
+}
+
+.devis-projet .ph {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+}
+
+.devis-projet .ph img {
+  width: 100%;
+  height: calc(100% + 2px);
+  margin-top: -1px;
+  object-fit: cover;
+  transition: transform 1.2s var(--dv-ease);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.devis-projet:hover .ph img {
+  transform: translateZ(0) scale(1.04);
+}
+
+.devis-projet .ph::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 48%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--ivory) 96%, white) 12%,
+    transparent
+  );
+}
+
+.devis-projet .body {
+  position: relative;
+  z-index: 2;
+  margin-top: -1px;
+  padding: 1.15rem 1.25rem 1.45rem;
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+}
+
+.devis-projet .body b {
+  display: block;
+  font-family: var(--font-cinzel), "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.devis-projet .body span {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.devis-check {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  background: rgba(28, 24, 20, 0.2);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-projet.on .devis-check {
+  background: var(--terre);
+  border-color: var(--terre);
+  color: #fff;
+}
+
+.devis-check svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+/* Chips occasion */
+.devis-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 2rem;
+}
+
+.devis-chip {
+  appearance: none;
+  border: 1px solid rgba(28, 24, 20, 0.18);
+  background: color-mix(in srgb, var(--ivory) 85%, white);
+  color: var(--ink);
+  padding: 0.7rem 1.05rem;
+  border-radius: 999px;
+  font: 600 0.68rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-chip:hover {
+  border-color: var(--terre);
+  color: var(--terre);
+}
+
+.devis-chip.on {
+  background: var(--terre);
+  border-color: var(--terre);
+  color: #fff;
+}
+
+.devis-or {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  font: 700 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(28, 24, 20, 0.4);
+}
+
+.devis-or::before,
+.devis-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(28, 24, 20, 0.12);
+}
+
+.devis-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.devis-field label {
+  font: 700 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.devis-field input,
+.devis-field textarea,
+.devis-field select {
+  width: 100%;
+  border: 1px solid rgba(28, 24, 20, 0.18);
+  background: color-mix(in srgb, var(--ivory) 70%, white);
+  color: var(--ink);
+  padding: 0.95rem 1.05rem;
+  font: 400 1rem/1.4 var(--font-eb-garamond), serif;
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.devis-field input:focus,
+.devis-field textarea:focus,
+.devis-field select:focus {
+  border-color: var(--terre);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--terre) 18%, transparent);
+}
+
+.devis-field textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.devis-grid-2 {
+  display: grid;
+  gap: 1.1rem;
+}
+
+@media (min-width: 700px) {
+  .devis-grid-2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1.5rem;
+  }
+}
+
+.devis-guests {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(28, 24, 20, 0.18);
+  background: color-mix(in srgb, var(--ivory) 70%, white);
+}
+
+.devis-guests button {
+  width: 3.1rem;
+  height: 3.1rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.devis-guests button:hover {
+  background: rgba(153, 104, 73, 0.1);
+}
+
+.devis-guests b {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-eb-garamond), serif;
+  font-weight: 500;
+  font-size: 1.45rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.devis-plages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.devis-plage {
+  appearance: none;
+  border: 1px solid rgba(28, 24, 20, 0.18);
+  background: color-mix(in srgb, var(--ivory) 85%, white);
+  padding: 0.75rem 1rem;
+  font: 600 0.68rem/1.2 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-plage:hover {
+  border-color: var(--terre);
+}
+
+.devis-plage.on {
+  background: var(--terre);
+  border-color: var(--terre);
+  color: #fff;
+}
+
+/* Composition */
+.devis-tabs {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem;
+  border: 1px solid rgba(28, 24, 20, 0.12);
+  background: color-mix(in srgb, var(--ivory) 80%, white);
+}
+
+.devis-tabs button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 1.1rem;
+  font: 700 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(28, 24, 20, 0.45);
+  cursor: pointer;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-tabs button.on {
+  background: var(--ink);
+  color: var(--ivory);
+}
+
+.devis-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .devis-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 980px) {
+  .devis-cards.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.devis-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border: 1.5px solid rgba(28, 24, 20, 0.12);
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.35s var(--dv-ease), box-shadow 0.35s var(--dv-ease);
+}
+
+.devis-card.on {
+  border-color: var(--terre);
+  box-shadow: 0 0 0 1px var(--terre);
+}
+
+.devis-card .ph {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  isolation: isolate;
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+}
+
+.devis-card .ph img {
+  width: 100%;
+  height: calc(100% + 2px);
+  margin-top: -1px;
+  object-fit: cover;
+  transition: transform 1.1s var(--dv-ease);
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.devis-card:hover .ph img {
+  transform: translateZ(0) scale(1.04);
+}
+
+.devis-card .body {
+  position: relative;
+  z-index: 2;
+  margin-top: -1px;
+  padding: 1rem 1.05rem 1.2rem;
+  background: color-mix(in srgb, var(--ivory) 92%, white);
+}
+
+.devis-card .body b {
+  display: block;
+  font-family: var(--font-cinzel), serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.devis-card .body span,
+.devis-card .body small {
+  display: block;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.devis-card .body small {
+  margin-top: 0.35rem;
+  font: 600 0.6rem/1.3 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bronze-deep);
+}
+
+.devis-card .devis-check {
+  border-color: rgba(255, 255, 255, 0.85);
+  background: rgba(28, 24, 20, 0.25);
+}
+
+.devis-card.on .devis-check {
+  background: var(--terre);
+  border-color: var(--terre);
+  color: #fff;
+}
+
+.devis-note {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+/* Coordonnées */
+.devis-civilite {
+  display: inline-flex;
+  gap: 0.3rem;
+  margin-bottom: 1.4rem;
+  padding: 0.25rem;
+  border: 1px solid rgba(28, 24, 20, 0.12);
+  background: color-mix(in srgb, var(--ivory) 80%, white);
+}
+
+.devis-civilite button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0.6rem 1rem;
+  font: 700 0.62rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(28, 24, 20, 0.45);
+  cursor: pointer;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-civilite button.on {
+  background: var(--terre);
+  color: #fff;
+}
+
+.devis-box {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: color-mix(in srgb, var(--ivory) 75%, white);
+  border: 1px solid rgba(28, 24, 20, 0.1);
+  box-shadow: 0 22px 50px rgba(28, 24, 20, 0.06);
+}
+
+.devis-consent {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-top: 1.4rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.devis-consent input {
+  margin-top: 0.2rem;
+  accent-color: var(--terre);
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
+/* Footer sticky */
+.devis-foot {
+  position: relative;
+  z-index: 5;
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem 1.2rem;
+  padding: 0.9rem var(--dv-pad);
+  background: color-mix(in srgb, var(--ink) 94%, #000);
+  color: var(--champagne);
+  border-top: 1px solid rgba(230, 212, 181, 0.18);
+}
+
+.devis-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-height: 1.8rem;
+}
+
+.devis-summary span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(230, 212, 181, 0.28);
+  font: 600 0.58rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--champagne);
+}
+
+.devis-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-left: auto;
+}
+
+.devis-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.9rem 1.35rem;
+  font: 600 0.68rem/1 var(--font-noto-sans), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: 0.3s var(--dv-ease);
+}
+
+.devis-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.devis-btn.ghost {
+  background: transparent;
+  border-color: rgba(230, 212, 181, 0.45);
+  color: var(--champagne);
+}
+
+.devis-btn.ghost:hover:not(:disabled) {
+  background: rgba(230, 212, 181, 0.1);
+}
+
+.devis-btn.solid {
+  background: var(--terre);
+  color: #fff;
+  border-color: var(--terre);
+}
+
+.devis-btn.solid:hover:not(:disabled) {
+  background: var(--terre-clair);
+}
+
+.devis-error {
+  margin: 0.85rem 0 0;
+  font-size: 0.88rem;
+  color: var(--grenade);
+}
+
+.devis-success {
+  text-align: center;
+  padding: 4rem 0 2rem;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.devis-success h1 {
+  font-family: var(--font-cinzel), "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  letter-spacing: 0.02em;
+  line-height: 1.12;
+  margin: 0 0 1rem;
+}
+
+.devis-success p {
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0 0 2rem;
+}
