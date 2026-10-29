@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MaisonPage } from "@/components/maison/MaisonPage";
 
-export const metadata: Metadata = {
-  title: "À propos | Restaurant libanais Assanabel Paris",
-  description: "Assanabel, cuisine libanaise d'exception à Paris 14 depuis 1988. L'histoire de la maison, son savoir-faire, ses tables.",
-  alternates: { canonical: "/a-propos" },
-};
+import { pageMetadata, SEO } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(SEO.aPropos, {
+  canonical: "/a-propos",
+});
 
 /** Page À propos (ex `/a-propos-2`) — maquette site-html/src/a-propos-2.html. */
 export default function Page() {

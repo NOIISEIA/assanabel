@@ -5,15 +5,11 @@ import BoutonPrivatiser from "@/components/BoutonPrivatiser";
 import { CarteConcept } from "@/components/CarteConcept";
 import { CarteParallax, type CarteBand } from "@/components/CarteParallax";
 import { carteBands, carteIntro, carteSections } from "@/data/carte";
+import { pageMetadata, SEO } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "La carte | Restaurant libanais Assanabel Paris",
-  description:
-    "Découvrez la carte Assanabel : mezzeh, grillades, poissons et desserts libanais à Paris 14 depuis 1988.",
-  alternates: {
-    canonical: "/la-carte",
-  },
-};
+export const metadata: Metadata = pageMetadata(SEO.laCarte, {
+  canonical: "/la-carte",
+});
 
 const bands: CarteBand[] = carteBands.map((band) => ({
   id: band.id,

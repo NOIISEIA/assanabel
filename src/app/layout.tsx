@@ -6,6 +6,7 @@ import { HideOnDevis } from "@/components/HideOnDevis";
 import { RecevoirFab } from "@/components/RecevoirFab";
 import { ZenchefWidget } from "@/components/ZenchefWidget";
 import { PartooWidget } from "@/components/PartooWidget";
+import { SEO } from "@/lib/seo";
 import "./globals.css";
 import "@/styles/maison-pages.css";
 
@@ -31,9 +32,26 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Restaurant libanais Paris 14 | Assanabel depuis 1988",
-  description:
-    "Assanabel, restaurant libanais à Paris depuis 1988. Cuisine généreuse, traiteur libanais et privatisation au cœur du quartier Alésia.",
+  title: {
+    default: SEO.home.title,
+    template: "%s",
+  },
+  description: SEO.home.description,
+  metadataBase: new URL("https://www.restaurant-assanabel.com"),
+  openGraph: {
+    title: SEO.home.title,
+    description: SEO.home.description,
+    locale: "fr_FR",
+    type: "website",
+    siteName: "Assanabel",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SEO.home.title,
+    description: SEO.home.description,
+  },
+  // Favicon / apple-icon : fichiers app/icon.svg, app/apple-icon.png, app/favicon.ico
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

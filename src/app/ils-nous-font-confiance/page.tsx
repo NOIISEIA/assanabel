@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MaisonPage } from "@/components/maison/MaisonPage";
 
-export const metadata: Metadata = {
-  title: "Ils nous font confiance | Restaurant libanais Assanabel Paris",
-  description: "Institutions, entreprises, hôpitaux et grandes écoles font confiance à Assanabel pour leurs réceptions : cocktails, déjeuners, séminaires, buffets.",
-  alternates: { canonical: "/ils-nous-font-confiance" },
-};
+import { pageMetadata, SEO } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(SEO.confiance, {
+  canonical: "/ils-nous-font-confiance",
+});
 
 /** Page Ils nous font confiance (ex `/a-propos`) — maquette site-html/src/a-propos.html. */
 export default function Page() {

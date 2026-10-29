@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MaisonPage } from "@/components/maison/MaisonPage";
 
-export const metadata: Metadata = {
-  title: "Privatisation de restaurant libanais à Paris | Assanabel",
-  description: "Privatisez la salle, la terrasse ou tout le restaurant Assanabel à Paris 14 : séminaire, mariage, baptême, dîner d'entreprise, dégustation de vins. Demandez votre devis.",
-  alternates: { canonical: "/privatisation" },
-};
+import { pageMetadata, SEO } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(SEO.privatisation, {
+  canonical: "/privatisation",
+});
 
 /** Page issue de la maquette site-html/src/privatisation.html (markup identique, styles dans src/styles/maison-pages.css). */
 export default function Page() {

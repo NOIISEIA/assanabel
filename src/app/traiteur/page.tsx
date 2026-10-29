@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MaisonPage } from "@/components/maison/MaisonPage";
 
-export const metadata: Metadata = {
-  title: "Traiteur libanais à Paris | Assanabel",
-  description: "Traiteur libanais à Paris et en Île-de-France : plateaux-repas, buffets, cocktails, service à table. Plus de 25 ans d'expérience dans l'événementiel. Demandez votre devis.",
-  alternates: { canonical: "/traiteur" },
-};
+import { pageMetadata, SEO } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(SEO.traiteur, {
+  canonical: "/traiteur",
+});
 
 /** Page issue de la maquette site-html/src/traiteur.html (markup identique, styles dans src/styles/maison-pages.css). */
 export default function Page() {

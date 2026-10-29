@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MaisonPage } from "@/components/maison/MaisonPage";
 
-export const metadata: Metadata = {
-  title: "Contact | Restaurant libanais Assanabel Paris",
-  description: "Contactez Assanabel, restaurant libanais à Paris 14 : réservation, privatisation, traiteur. Adresse, horaires, accès.",
-  alternates: { canonical: "/contact" },
-};
+import { pageMetadata, SEO } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata(SEO.contact, {
+  canonical: "/contact",
+});
 
 /** Page issue de la maquette site-html/src/contact.html (markup identique, styles dans src/styles/maison-pages.css). */
 export default function Page() {
