@@ -1,23 +1,18 @@
 /* Parcours devis interactif — design system Assanabel */
 
-/* Masque le chrome site + widgets flottants sur /devis (data-devis + .devis) */
-html[data-devis] body,
-body:has(.devis) {
+/*
+ * Verrouille le scroll UNIQUEMENT via html[data-devis] (posé/retiré par DevisChrome).
+ * Ne pas utiliser body:has(.devis) : Next peut laisser un .devis fantôme en display:none
+ * après navigation client, ce qui bloquait overflow + header/hero sur la HP.
+ */
+html[data-devis] body {
   height: 100dvh;
   overflow: hidden;
 }
 
-html[data-devis] main,
-body:has(.devis) main {
+html[data-devis] main {
   height: 100dvh;
   overflow: hidden;
-}
-
-html[data-devis] .site-header,
-html[data-devis] .site-footer,
-body:has(.devis) .site-header,
-body:has(.devis) .site-footer {
-  display: none !important;
 }
 
 html[data-devis] iframe[src*="zenchef"],
@@ -27,15 +22,7 @@ html[data-devis] [class*="ZC_sdk"],
 html[data-devis] [id*="zenchef"],
 html[data-devis] [class*="partoo"],
 html[data-devis] [id*="partoo"],
-html[data-devis] #partoo-messaging-widget,
-body:has(.devis) iframe[src*="zenchef"],
-body:has(.devis) iframe[id*="zenchef"],
-body:has(.devis) iframe[class*="ZC_"],
-body:has(.devis) [class*="ZC_sdk"],
-body:has(.devis) [id*="zenchef"],
-body:has(.devis) [class*="partoo"],
-body:has(.devis) [id*="partoo"],
-body:has(.devis) #partoo-messaging-widget {
+html[data-devis] #partoo-messaging-widget {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;

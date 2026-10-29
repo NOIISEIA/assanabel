@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cinzel, EB_Garamond, Noto_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { HideOnDevis } from "@/components/HideOnDevis";
 import { RecevoirFab } from "@/components/RecevoirFab";
 import { ZenchefWidget } from "@/components/ZenchefWidget";
 import { PartooWidget } from "@/components/PartooWidget";
@@ -49,7 +50,9 @@ export default function RootLayout({
         <SiteHeader />
         {/* isolate : confiné le sticky/vidéo du hero sous le header (z-200) dès le 1er paint */}
         <main className="relative z-0 isolate flex-1">{children}</main>
-        <SiteFooter />
+        <HideOnDevis>
+          <SiteFooter />
+        </HideOnDevis>
         <RecevoirFab />
         <ZenchefWidget />
         <PartooWidget />

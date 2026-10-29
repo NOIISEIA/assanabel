@@ -28,11 +28,28 @@ export function SiteHeader() {
   const [menu, setMenu] = useState(false);
   const bar = useRef<HTMLSpanElement>(null);
 
+  const onDevis = pathname?.startsWith("/devis") ?? false;
+
   useEffect(() => {
     setMenu(false);
   }, [pathname]);
 
+  /* Quitte /devis : enlève le verrou overflow + remonte en haut (sinon HP sous le hero sticky, sans header) */
   useEffect(() => {
+    if (onDevis) return;
+    document.documentElement.removeAttribute("data-devis");
+    document.body.style.removeProperty("height");
+    document.body.style.removeProperty("overflow");
+    const main = document.querySelector("main");
+    if (main instanceof HTMLElement) {
+      main.style.removeProperty("height");
+      main.style.removeProperty("overflow");
+    }
+    window.scrollTo(0, 0);
+  }, [pathname, onDevis]);
+
+  useEffect(() => {
+    if (onDevis) return;
     const onScroll = () => {
       const y = window.scrollY;
       const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -48,9 +65,10 @@ export function SiteHeader() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [onDevis]);
 
   useEffect(() => {
+    if (onDevis) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMenu(false);
     };
@@ -60,7 +78,9 @@ export function SiteHeader() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [menu]);
+  }, [menu, onDevis]);
+
+  if (onDevis) return null;
 
   const barSolid = scrolled || menu;
 
